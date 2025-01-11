@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qp.grocerybooking.constants.ApiEndpoints;
+import com.qp.grocerybooking.constants.LogMessages;
+import com.qp.grocerybooking.dto.response.UserResponseDto;
 import com.qp.grocerybooking.entities.User;
 import com.qp.grocerybooking.services.UserService;
 
@@ -22,8 +24,16 @@ public class UserController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
 	@PostMapping(ApiEndpoints.REGISTER_USER)
-	public User registerUser(@RequestBody User user) {
-		User newUser = userService.registerUser(user);
+	public UserResponseDto registerUser(@RequestBody User user) {
+		LOGGER.info(LogMessages.UC_REGISTER_USER_S, user.getName());
+		UserResponseDto newUser = userService.registerUser(user);
 		return newUser;
 	}
+	
+	@PostMapping(ApiEndpoints.LOGIN)
+	public String login(@RequestBody User user) {
+		String loginResponse = userService.login(user);
+		return loginResponse;
+	}
+	
 }
