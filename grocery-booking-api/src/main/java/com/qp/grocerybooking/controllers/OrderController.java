@@ -1,5 +1,28 @@
 package com.qp.grocerybooking.controllers;
 
-public class OrderController {
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.qp.grocerybooking.constants.ApiEndpoints;
+import com.qp.grocerybooking.entities.Order;
+import com.qp.grocerybooking.entities.OrderItem;
+import com.qp.grocerybooking.services.OrderService;
+
+@RestController
+@RequestMapping(ApiEndpoints.ORDER_BASE_URL)
+public class OrderController {
+	
+    @Autowired
+    private OrderService orderService;
+
+    @PostMapping
+    public ResponseEntity<Order> placeOrder(@RequestBody List<OrderItem> items) {
+        return ResponseEntity.ok(orderService.placeOrder(items));
+    }
 }

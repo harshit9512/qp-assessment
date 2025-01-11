@@ -13,16 +13,16 @@ import com.qp.grocerybooking.constants.ApiEndpoints;
 import com.qp.grocerybooking.constants.LogMessages;
 import com.qp.grocerybooking.dto.response.UserResponseDto;
 import com.qp.grocerybooking.entities.User;
-import com.qp.grocerybooking.services.UserService;
+import com.qp.grocerybooking.services.AuthService;
 
 @RestController
-@RequestMapping(ApiEndpoints.USER_BASE_URL)
-public class UserController {
+@RequestMapping(ApiEndpoints.AUTH_BASE_URL)
+public class AuthController {
 	
 	@Autowired
-	UserService userService;
+	AuthService userService;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
 	@PostMapping(ApiEndpoints.REGISTER_USER)
 	public ResponseEntity<UserResponseDto> registerUser(@RequestBody User user) {

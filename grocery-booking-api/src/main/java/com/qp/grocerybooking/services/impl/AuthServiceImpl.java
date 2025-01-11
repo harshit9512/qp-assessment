@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import com.qp.grocerybooking.dto.response.UserResponseDto;
 import com.qp.grocerybooking.entities.User;
 import com.qp.grocerybooking.repositories.UserRepository;
-import com.qp.grocerybooking.services.UserService;
+import com.qp.grocerybooking.services.AuthService;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class AuthServiceImpl implements AuthService{
 	
 	@Autowired
 	UserRepository userRepository;
