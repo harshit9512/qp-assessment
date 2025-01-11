@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class OrderItem {
 	
 	@ManyToOne
 	@JoinColumn(name = "order_id", nullable = false)
+	@JsonIgnore
 	private Order order;
 	
 	@JoinColumn(name = "grocery_item_id", nullable = false)

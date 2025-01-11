@@ -37,18 +37,18 @@ public class GroceryItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGroceryItem(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteGroceryItem(@PathVariable("id") Long id) {
         groceryItemService.deleteGroceryItem(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GroceryItem> updateGroceryItem(@PathVariable Long id, @RequestBody GroceryItem updatedItem) {
+    public ResponseEntity<GroceryItem> updateGroceryItem(@PathVariable("id") Long id, @RequestBody GroceryItem updatedItem) {
         return ResponseEntity.ok(groceryItemService.updateGroceryItem(id, updatedItem));
     }
 
     @PatchMapping("/{id}/inventory")
-    public ResponseEntity<GroceryItem> updateInventory(@PathVariable Long id, @RequestBody BigInteger quantity) {
+    public ResponseEntity<GroceryItem> updateInventory(@PathVariable("id") Long id, @RequestBody BigInteger quantity) {
         return ResponseEntity.ok(groceryItemService.updateInventory(id, quantity));
     }
 }
