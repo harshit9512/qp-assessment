@@ -2,9 +2,12 @@ package com.qp.grocerybooking.services.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,6 @@ import com.qp.grocerybooking.entities.OrderItem;
 import com.qp.grocerybooking.enums.OrderStatus;
 import com.qp.grocerybooking.exceptions.ResourceNotFoundException;
 import com.qp.grocerybooking.repositories.GroceryItemRepository;
-import com.qp.grocerybooking.repositories.OrderItemRepository;
 import com.qp.grocerybooking.repositories.OrderRepository;
 import com.qp.grocerybooking.services.OrderService;
 
@@ -26,9 +28,6 @@ public class OrderServiceImpl implements OrderService{
 
     @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderItemRepository orderItemRepository;
 
     @Autowired
     private GroceryItemRepository groceryItemRepository;
@@ -52,20 +51,20 @@ public class OrderServiceImpl implements OrderService{
             groceryItem.setQuantity(groceryItem.getQuantity().subtract(item.getQuantity()));
             groceryItemRepository.save(groceryItem);
 
-            orderItem.setOrder(order); // Associate OrderItem with Order
+            orderItem.setOrder(order);
             orderItem.setGroceryItem(groceryItem);
             orderItem.setPrice(groceryItem.getPrice());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setTotalPrice(groceryItem.getPrice().multiply(new BigDecimal(item.getQuantity())));
-            order.getItems().add(orderItem); // Add OrderItem to Order
+            order.getItems().add(orderItem);
         }
 
         order.setTotalAmount(order.getItems().stream()
                 .map(OrderItem::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add));
 
-        order.setOrderNumber(this.createOrderNumber());
-        return orderRepository.save(order); // Cascade saves Order and OrderItems
+        order.setOrderNumber(this.generateOrderNumber());
+        return orderRepository.save(order);
     }
 
 
@@ -75,9 +74,13 @@ public class OrderServiceImpl implements OrderService{
 		return groceryItemRepository.findByQuantityNot(BigInteger.ZERO);
 	}
 
-	private String createOrderNumber() {
-		StringBuilder orderNo = new StringBuilder("PQ");
-		orderNo = orderNo.append(LocalDateTime.now().toString());
-		return orderNo.toString();
+	private String generateOrderNumber() {
+        String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+
+        Random random = new Random();
+        int randomNumber = 1000 + random.nextInt(9000);
+
+        return "PQ" + date + randomNumber;
+
 	}
 }
