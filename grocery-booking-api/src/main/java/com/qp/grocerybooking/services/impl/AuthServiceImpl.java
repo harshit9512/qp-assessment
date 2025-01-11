@@ -4,8 +4,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qp.grocerybooking.constants.ResponseMessages;
+import com.qp.grocerybooking.dto.response.ApiResponseDto;
 import com.qp.grocerybooking.dto.response.UserResponseDto;
 import com.qp.grocerybooking.entities.User;
+import com.qp.grocerybooking.exceptions.UnauthorizedAccessException;
 import com.qp.grocerybooking.repositories.UserRepository;
 import com.qp.grocerybooking.services.AuthService;
 
@@ -19,18 +22,20 @@ public class AuthServiceImpl implements AuthService{
 	ModelMapper modelMapper;
 
 	@Override
-	public UserResponseDto registerUser(User user) {
+	public ApiResponseDto<UserResponseDto> registerUser(User user) {
 		User newUserEntity = userRepository.save(user);
-		return modelMapper.map(newUserEntity, UserResponseDto.class);
+		UserResponseDto userDto = modelMapper.map(newUserEntity, UserResponseDto.class);
+		return ApiResponseDto.<UserResponseDto>builder().isSuccess(true).message(ResponseMessages.USER_REGISTERED).data(userDto).build();
 	}
 
 	@Override
-	public String login(User userRequest) {
+	public ApiResponseDto<UserResponseDto> login(User userRequest) {
 		User user = userRepository.findByEmail(userRequest.getEmail());
+		UserResponseDto userDto = modelMapper.map(user, UserResponseDto.class);
 		if(userRequest.getPassword().equalsIgnoreCase(user.getPassword())) {
-			return "login successful";
+			return ApiResponseDto.<UserResponseDto>builder().isSuccess(true).message(ResponseMessages.LOGIN_SUCCESS).data(userDto).build();
 		} else {
-			return "Login failed, password incorrect";
+			throw new UnauthorizedAccessException(ResponseMessages.INCORRECT_PASSWORD);
 		}
 	}
 

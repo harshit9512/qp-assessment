@@ -3,8 +3,10 @@ package com.qp.grocerybooking.controllers;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qp.grocerybooking.constants.ApiEndpoints;
+import com.qp.grocerybooking.dto.response.ApiResponseDto;
 import com.qp.grocerybooking.entities.GroceryItem;
 import com.qp.grocerybooking.services.GroceryItemService;
 
@@ -27,28 +30,28 @@ public class GroceryItemController {
     private GroceryItemService groceryItemService;
 
     @PostMapping
-    public ResponseEntity<GroceryItem> addGroceryItem(@RequestBody GroceryItem item) {
+    public ResponseEntity<ApiResponseDto<GroceryItem>> addGroceryItem(@RequestBody GroceryItem item) {
         return ResponseEntity.ok(groceryItemService.addGroceryItem(item));
     }
 
     @GetMapping
-    public ResponseEntity<List<GroceryItem>> getAllGroceryItems() {
+    public ResponseEntity<ApiResponseDto<List<GroceryItem>>> getAllGroceryItems() {
         return ResponseEntity.ok(groceryItemService.getAllGroceryItems());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGroceryItem(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteGroceryItem(@PathVariable("id") @NonNull Long id) {
         groceryItemService.deleteGroceryItem(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GroceryItem> updateGroceryItem(@PathVariable("id") Long id, @RequestBody GroceryItem updatedItem) {
+    public ResponseEntity<ApiResponseDto<GroceryItem>> updateGroceryItem(@PathVariable("id") Long id, @RequestBody GroceryItem updatedItem) {
         return ResponseEntity.ok(groceryItemService.updateGroceryItem(id, updatedItem));
     }
 
     @PatchMapping("/{id}/inventory")
-    public ResponseEntity<GroceryItem> updateInventory(@PathVariable("id") Long id, @RequestBody BigInteger quantity) {
+    public ResponseEntity<ApiResponseDto<GroceryItem>> updateInventory(@PathVariable("id") Long id, @RequestBody BigInteger quantity) {
         return ResponseEntity.ok(groceryItemService.updateInventory(id, quantity));
     }
 }

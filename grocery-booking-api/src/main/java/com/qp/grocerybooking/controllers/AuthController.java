@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qp.grocerybooking.constants.ApiEndpoints;
 import com.qp.grocerybooking.constants.LogMessages;
+import com.qp.grocerybooking.dto.response.ApiResponseDto;
 import com.qp.grocerybooking.dto.response.UserResponseDto;
 import com.qp.grocerybooking.entities.User;
 import com.qp.grocerybooking.services.AuthService;
@@ -25,15 +26,15 @@ public class AuthController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
 	@PostMapping(ApiEndpoints.REGISTER_USER)
-	public ResponseEntity<UserResponseDto> registerUser(@RequestBody User user) {
+	public ResponseEntity<ApiResponseDto<UserResponseDto>> registerUser(@RequestBody User user) {
 		LOGGER.info(LogMessages.UC_REGISTER_USER_S, user.getName());
-		UserResponseDto newUser = userService.registerUser(user);
-		return ResponseEntity.ok(newUser);
+		ApiResponseDto<UserResponseDto> newUserResponse = userService.registerUser(user);
+		return ResponseEntity.ok(newUserResponse);
 	}
 	
 	@PostMapping(ApiEndpoints.LOGIN)
-	public ResponseEntity<String> login(@RequestBody User user) {
-		String loginResponse = userService.login(user);
+	public ResponseEntity<ApiResponseDto<UserResponseDto>> login(@RequestBody User user) {
+		ApiResponseDto<UserResponseDto> loginResponse = userService.login(user);
 		return ResponseEntity.ok(loginResponse);
 	}
 	
