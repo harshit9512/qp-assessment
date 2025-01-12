@@ -33,7 +33,7 @@ public class User {
 	@Column(nullable = false)
 	private UserRole role;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String email;
 	
 	@Column(nullable = false)

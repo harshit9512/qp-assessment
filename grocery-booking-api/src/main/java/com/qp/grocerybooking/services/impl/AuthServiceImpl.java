@@ -1,14 +1,20 @@
 package com.qp.grocerybooking.services.impl;
 
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.qp.grocerybooking.constants.ErrorMessages;
 import com.qp.grocerybooking.constants.ResponseMessages;
+import com.qp.grocerybooking.dto.UserDto;
+import com.qp.grocerybooking.dto.request.LoginRequestDto;
 import com.qp.grocerybooking.dto.response.ApiResponseDto;
-import com.qp.grocerybooking.dto.response.UserResponseDto;
 import com.qp.grocerybooking.entities.User;
+import com.qp.grocerybooking.exceptions.ApiException;
+import com.qp.grocerybooking.exceptions.ResourceNotFoundException;
 import com.qp.grocerybooking.exceptions.UnauthorizedAccessException;
 import com.qp.grocerybooking.jwt.JwtUtil;
 import com.qp.grocerybooking.repositories.UserRepository;
@@ -30,25 +36,37 @@ public class AuthServiceImpl implements AuthService {
 	private JwtUtil jwtUtil;
 
 	@Override
-	public ApiResponseDto<UserResponseDto> registerUser(User user) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+	public ApiResponseDto<UserDto> registerUser(UserDto userDto) {
+		Optional<User> userOpt = userRepository.findByEmail(userDto.getEmail());
+		if (userOpt.isPresent()) {
+			return ApiResponseDto.<UserDto>builder().isSuccess(false).message(ResponseMessages.USER_ALREADY_EXIST)
+					.data(userDto).build();
+		}
+		User user = modelMapper.map(userDto, User.class);
+		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		User newUserEntity = userRepository.save(user);
-		UserResponseDto userDto = modelMapper.map(newUserEntity, UserResponseDto.class);
-		return ApiResponseDto.<UserResponseDto>builder().isSuccess(true).message(ResponseMessages.USER_REGISTERED)
-				.data(userDto).build();
+		userDto.setId(newUserEntity.getId());
+		userDto.setPassword(null);
+		return ApiResponseDto.<UserDto>builder().isSuccess(true).message(ResponseMessages.USER_REGISTERED).data(userDto)
+				.build();
 	}
 
 	@Override
-	public ApiResponseDto<UserResponseDto> login(User userRequest) {
-		User user = userRepository.findByEmail(userRequest.getEmail());
-		if (user == null || !passwordEncoder.matches(userRequest.getPassword(), user.getPassword())) {
+	public ApiResponseDto<UserDto> login(LoginRequestDto loginRequest) {
+		Optional<User> userOpt = userRepository.findByEmail(loginRequest.getEmail());
+		if (userOpt.isEmpty()) {
+			throw new ResourceNotFoundException(ErrorMessages.USER_NOT_FOUND);
+		}
+		User user = userOpt.get();
+		if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
 			throw new UnauthorizedAccessException(ResponseMessages.INVALID_CREDENTIALS);
 		}
 		String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
-		UserResponseDto userDto = modelMapper.map(user, UserResponseDto.class);
+		UserDto userDto = modelMapper.map(user, UserDto.class);
+		userDto.setPassword(null);
 		userDto.setToken(token);
-		return ApiResponseDto.<UserResponseDto>builder().isSuccess(true).message(ResponseMessages.LOGIN_SUCCESS)
-				.data(userDto).build();
+		return ApiResponseDto.<UserDto>builder().isSuccess(true).message(ResponseMessages.LOGIN_SUCCESS).data(userDto)
+				.build();
 	}
 
 }

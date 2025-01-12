@@ -5,20 +5,22 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qp.grocerybooking.dto.request.OrderItemRequestDto;
+import com.qp.grocerybooking.dto.request.PlaceOrderRequestDto;
 import com.qp.grocerybooking.dto.response.ApiResponseDto;
 import com.qp.grocerybooking.entities.GroceryItem;
 import com.qp.grocerybooking.entities.Order;
 import com.qp.grocerybooking.entities.OrderItem;
 import com.qp.grocerybooking.enums.OrderStatus;
-import com.qp.grocerybooking.exceptions.ApiException;
 import com.qp.grocerybooking.exceptions.ResourceNotFoundException;
 import com.qp.grocerybooking.repositories.GroceryItemRepository;
 import com.qp.grocerybooking.repositories.OrderRepository;
 import com.qp.grocerybooking.services.OrderService;
+import com.qp.grocerybooking.utilities.CommonUtils;
 
 import jakarta.transaction.Transactional;
 
@@ -33,12 +35,12 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public ApiResponseDto<Order> placeOrder(List<OrderItem> items) {
+	public ApiResponseDto<Order> placeOrder(PlaceOrderRequestDto placeOrderRequest) {
 		Order order = new Order();
 		order.setStatus(OrderStatus.PENDING);
 		order.setTotalAmount(BigDecimal.ZERO);
 
-		for (OrderItem item : items) {
+		for (OrderItemRequestDto item : placeOrderRequest.getOrderItemDetails()) {
 			OrderItem orderItem = new OrderItem();
 			GroceryItem groceryItem = groceryItemRepository.findById(item.getId())
 					.orElseThrow(() -> new ResourceNotFoundException("Grocery item not found."));
@@ -78,10 +80,7 @@ public class OrderServiceImpl implements OrderService {
 
 	private String generateOrderNumber() {
 		String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-
-		Random random = new Random();
-		int randomNumber = 1000 + random.nextInt(9000);
-
+		String randomNumber = CommonUtils.generateRandomNumberString(4);
 		return "PQ" + date + randomNumber;
 	}
 }

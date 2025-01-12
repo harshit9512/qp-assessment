@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qp.grocerybooking.constants.ApiEndpoints;
+import com.qp.grocerybooking.dto.request.PlaceOrderRequestDto;
 import com.qp.grocerybooking.dto.response.ApiResponseDto;
 import com.qp.grocerybooking.entities.GroceryItem;
 import com.qp.grocerybooking.entities.Order;
-import com.qp.grocerybooking.entities.OrderItem;
 import com.qp.grocerybooking.services.OrderService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(ApiEndpoints.ORDER_BASE_URL)
@@ -25,8 +27,8 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<ApiResponseDto<Order>> placeOrder(@RequestBody List<OrderItem> items) {
-        return ResponseEntity.ok(orderService.placeOrder(items));
+    public ResponseEntity<ApiResponseDto<Order>> placeOrder(@Valid @RequestBody PlaceOrderRequestDto placeOrderRequest) {
+        return ResponseEntity.ok(orderService.placeOrder(placeOrderRequest));
     }
     
     @GetMapping
