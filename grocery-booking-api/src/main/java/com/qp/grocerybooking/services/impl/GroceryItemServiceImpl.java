@@ -17,6 +17,8 @@ import com.qp.grocerybooking.exceptions.ResourceNotFoundException;
 import com.qp.grocerybooking.repositories.GroceryItemRepository;
 import com.qp.grocerybooking.services.GroceryItemService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class GroceryItemServiceImpl implements GroceryItemService {
 
@@ -25,6 +27,7 @@ public class GroceryItemServiceImpl implements GroceryItemService {
 	
 	@Autowired ModelMapper modelMapper;
 
+	@Transactional
 	public ApiResponseDto<GroceryItem> addGroceryItem(GroceryItemDto item) {
 		GroceryItem groceryItem = modelMapper.map(item, GroceryItem.class);
 		GroceryItem savedGroceryItem = groceryItemRepository.save(groceryItem);
@@ -38,6 +41,7 @@ public class GroceryItemServiceImpl implements GroceryItemService {
 				.message(ResponseMessages.DATA_FETCHED_SUCCESSFULLY).data(groceryItems).build();
 	}
 
+	@Transactional
 	public ApiResponseDto<String> deleteGroceryItem(Long id) {
 		Optional<GroceryItem> groceryItem = groceryItemRepository.findById(id);
 		if (groceryItem.isEmpty()) {
@@ -48,6 +52,7 @@ public class GroceryItemServiceImpl implements GroceryItemService {
 				.build();
 	}
 
+	@Transactional
 	public ApiResponseDto<GroceryItem> updateGroceryItem(Long id, UpdateGroceryItemRequestDto updatedItem) {
 		GroceryItem item = groceryItemRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(ResponseMessages.ITEM_DOES_NOT_EXIST));
@@ -59,6 +64,7 @@ public class GroceryItemServiceImpl implements GroceryItemService {
 				.data(savedGroceryItem).build();
 	}
 
+	@Transactional
 	public ApiResponseDto<GroceryItem> updateInventory(Long id, UpdateInventoryRequestDto updateInventoryRequestDto) {
 		GroceryItem item = groceryItemRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(ResponseMessages.ITEM_DOES_NOT_EXIST));

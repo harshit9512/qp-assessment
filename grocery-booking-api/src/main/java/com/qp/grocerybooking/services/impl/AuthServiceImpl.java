@@ -20,6 +20,8 @@ import com.qp.grocerybooking.jwt.JwtUtil;
 import com.qp.grocerybooking.repositories.UserRepository;
 import com.qp.grocerybooking.services.AuthService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -36,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
 	private JwtUtil jwtUtil;
 
 	@Override
+	@Transactional
 	public ApiResponseDto<UserDto> registerUser(UserDto userDto) {
 		Optional<User> userOpt = userRepository.findByEmail(userDto.getEmail());
 		if (userOpt.isPresent()) {
