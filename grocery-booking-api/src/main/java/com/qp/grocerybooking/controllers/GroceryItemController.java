@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -32,28 +33,33 @@ public class GroceryItemController {
 	@Autowired
 	private GroceryItemService groceryItemService;
 
+	@Secured("ROLE_ADMIN")
 	@PostMapping
 	public ResponseEntity<ApiResponseDto<GroceryItem>> addGroceryItem(@Valid @RequestBody GroceryItemDto item) {
 		return ResponseEntity.ok(groceryItemService.addGroceryItem(item));
 	}
 
+	@Secured("ROLE_ADMIN")
 	@GetMapping
 	public ResponseEntity<ApiResponseDto<List<GroceryItem>>> getAllGroceryItems() {
 		return ResponseEntity.ok(groceryItemService.getAllGroceryItems());
 	}
 
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteGroceryItem(@PathVariable("id") @NonNull Long id) {
 		groceryItemService.deleteGroceryItem(id);
 		return ResponseEntity.noContent().build();
 	}
 
+	@Secured("ROLE_ADMIN")
 	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponseDto<GroceryItem>> updateGroceryItem(@PathVariable("id") Long id,
 			@Valid @RequestBody UpdateGroceryItemRequestDto updatedItem) {
 		return ResponseEntity.ok(groceryItemService.updateGroceryItem(id, updatedItem));
 	}
 
+	@Secured("ROLE_ADMIN")
 	@PatchMapping("/{id}/inventory")
 	public ResponseEntity<ApiResponseDto<GroceryItem>> updateInventory(@PathVariable("id") Long id,
 			@Valid @RequestBody UpdateInventoryRequestDto updateInventoryRequestDto) {
