@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qp.grocerybooking.constants.ApiEndpoints;
+import com.qp.grocerybooking.constants.AppContants;
 import com.qp.grocerybooking.dto.request.PlaceOrderRequestDto;
 import com.qp.grocerybooking.dto.response.ApiResponseDto;
 import com.qp.grocerybooking.entities.GroceryItem;
@@ -27,13 +28,13 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Secured("ROLE_USER")
+    @Secured(AppContants.ROLE_USER)
     @PostMapping
     public ResponseEntity<ApiResponseDto<Order>> placeOrder(@Valid @RequestBody PlaceOrderRequestDto placeOrderRequest) {
         return ResponseEntity.ok(orderService.placeOrder(placeOrderRequest));
     }
     
-    @Secured("ROLE_USER")
+    @Secured(AppContants.ROLE_USER)
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<GroceryItem>>> getAvailableGroceryItems() {
     	return ResponseEntity.ok(orderService.getAvailableGroceryItems());
