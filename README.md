@@ -7,7 +7,7 @@ The **Grocery Booking API** is a backend service for managing grocery bookings. 
 ## Features
 
 - **Grocery Product Management**: Add, update, delete, and list grocery products.
-- **Order Management**: Place orders, view available items to create order.
+- **Order Management**: Place orders with multiple items, view available items to create order.
 - **User Authentication**: Users can register and log in to manage their bookings.
 
 ## Technologies Used
@@ -19,8 +19,9 @@ The **Grocery Booking API** is a backend service for managing grocery bookings. 
 - **Containerization**: Docker
 
 ## Internal Features
-- Global and custom exception handling
+- Role based access control
 - Password Encryption and decryption
+- Global and custom exception handling
 - Standardized API responses
 - Request and business validations
 
