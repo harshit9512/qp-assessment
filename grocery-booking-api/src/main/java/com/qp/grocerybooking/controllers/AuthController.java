@@ -37,5 +37,4 @@ public class AuthController {
 		ApiResponseDto<UserResponseDto> loginResponse = userService.login(user);
 		return ResponseEntity.ok(loginResponse);
 	}
-	
 }

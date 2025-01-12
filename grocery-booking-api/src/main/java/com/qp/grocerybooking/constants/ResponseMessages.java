@@ -11,4 +11,5 @@ public class ResponseMessages {
 	public static final String ITEM_DOES_NOT_EXIST = "Item does not exist.";
 	public static final String UNABLE_TO_DELETE_ITEM = "Unable to delete item.";
 	public static final String ITEM_DELETED_SUCCESSFULLY = "Item deleted successfully.";
+	public static final String INVALID_CREDENTIALS = "Invalid credentials.";
 }
