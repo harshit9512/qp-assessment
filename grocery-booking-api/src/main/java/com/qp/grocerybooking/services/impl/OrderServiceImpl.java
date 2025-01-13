@@ -9,6 +9,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qp.grocerybooking.constants.ErrorMessages;
+import com.qp.grocerybooking.constants.ResponseMessages;
 import com.qp.grocerybooking.dto.request.OrderItemRequestDto;
 import com.qp.grocerybooking.dto.request.PlaceOrderRequestDto;
 import com.qp.grocerybooking.dto.response.ApiResponseDto;
@@ -43,10 +45,10 @@ public class OrderServiceImpl implements OrderService {
 		for (OrderItemRequestDto item : placeOrderRequest.getOrderItemDetails()) {
 			OrderItem orderItem = new OrderItem();
 			GroceryItem groceryItem = groceryItemRepository.findById(item.getId())
-					.orElseThrow(() -> new ResourceNotFoundException("Grocery item not found."));
+					.orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.ITEM_NOT_FOUND));
 
 			if (groceryItem.getQuantity().compareTo(item.getQuantity()) < 0) {
-				return ApiResponseDto.<Order>builder().isSuccess(false).message("Insufficient stock for item: " + groceryItem.getName()).data(null)
+				return ApiResponseDto.<Order>builder().isSuccess(false).message(ResponseMessages.INSUFFICIENT_STOCK_FOR_ITEM + groceryItem.getName()).data(null)
 						.build();
 			}
 
@@ -66,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
 
 		order.setOrderNumber(this.generateOrderNumber());
 		Order savedOrder = orderRepository.save(order);
-		return ApiResponseDto.<Order>builder().isSuccess(true).message("Order placed successfully").data(savedOrder)
+		return ApiResponseDto.<Order>builder().isSuccess(true).message(ResponseMessages.ORDER_PLACED).data(savedOrder)
 				.build();
 	}
 

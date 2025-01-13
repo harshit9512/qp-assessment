@@ -48,9 +48,8 @@ public class GroceryItemController {
 
 	@Secured(AppContants.ROLE_ADMIN)
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteGroceryItem(@PathVariable("id") @NonNull Long id) {
-		groceryItemService.deleteGroceryItem(id);
-		return ResponseEntity.noContent().build();
+	public ResponseEntity<ApiResponseDto<String>> deleteGroceryItem(@PathVariable("id") @NonNull Long id) {
+		return ResponseEntity.ok(groceryItemService.deleteGroceryItem(id));
 	}
 
 	@Secured(AppContants.ROLE_ADMIN)

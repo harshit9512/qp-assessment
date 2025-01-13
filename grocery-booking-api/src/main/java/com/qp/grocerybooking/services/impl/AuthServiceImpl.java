@@ -14,6 +14,7 @@ import com.qp.grocerybooking.dto.request.LoginRequestDto;
 import com.qp.grocerybooking.dto.response.ApiResponseDto;
 import com.qp.grocerybooking.entities.User;
 import com.qp.grocerybooking.exceptions.ApiException;
+import com.qp.grocerybooking.exceptions.ResourceConflictException;
 import com.qp.grocerybooking.exceptions.ResourceNotFoundException;
 import com.qp.grocerybooking.exceptions.UnauthorizedAccessException;
 import com.qp.grocerybooking.jwt.JwtUtil;
@@ -42,8 +43,7 @@ public class AuthServiceImpl implements AuthService {
 	public ApiResponseDto<UserDto> registerUser(UserDto userDto) {
 		Optional<User> userOpt = userRepository.findByEmail(userDto.getEmail());
 		if (userOpt.isPresent()) {
-			return ApiResponseDto.<UserDto>builder().isSuccess(false).message(ResponseMessages.USER_ALREADY_EXIST)
-					.data(userDto).build();
+			throw new ResourceConflictException(ErrorMessages.USER_ALREADY_EXIST);
 		}
 		User user = modelMapper.map(userDto, User.class);
 		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 		User user = userOpt.get();
 		if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-			throw new UnauthorizedAccessException(ResponseMessages.INVALID_CREDENTIALS);
+			throw new UnauthorizedAccessException(ErrorMessages.INVALID_CREDENTIALS);
 		}
 		String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
 		UserDto userDto = modelMapper.map(user, UserDto.class);

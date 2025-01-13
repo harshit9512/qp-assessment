@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qp.grocerybooking.constants.ErrorMessages;
 import com.qp.grocerybooking.constants.ResponseMessages;
 import com.qp.grocerybooking.dto.GroceryItemDto;
 import com.qp.grocerybooking.dto.request.UpdateGroceryItemRequestDto;
@@ -31,7 +32,7 @@ public class GroceryItemServiceImpl implements GroceryItemService {
 	public ApiResponseDto<GroceryItem> addGroceryItem(GroceryItemDto item) {
 		GroceryItem groceryItem = modelMapper.map(item, GroceryItem.class);
 		GroceryItem savedGroceryItem = groceryItemRepository.save(groceryItem);
-		return ApiResponseDto.<GroceryItem>builder().isSuccess(true).message(ResponseMessages.ITEM_ADDED_SUCCESSFULLY)
+		return ApiResponseDto.<GroceryItem>builder().isSuccess(true).message(ErrorMessages.ITEM_ADDED_SUCCESSFULLY)
 				.data(savedGroceryItem).build();
 	}
 
@@ -45,7 +46,7 @@ public class GroceryItemServiceImpl implements GroceryItemService {
 	public ApiResponseDto<String> deleteGroceryItem(Long id) {
 		Optional<GroceryItem> groceryItem = groceryItemRepository.findById(id);
 		if (groceryItem.isEmpty()) {
-			throw new ResourceNotFoundException(ResponseMessages.ITEM_DOES_NOT_EXIST);
+			throw new ResourceNotFoundException(ErrorMessages.ITEM_DOES_NOT_EXIST);
 		}
 		groceryItemRepository.deleteById(id);
 		return ApiResponseDto.<String>builder().isSuccess(true).message(ResponseMessages.ITEM_DELETED_SUCCESSFULLY)
@@ -55,7 +56,7 @@ public class GroceryItemServiceImpl implements GroceryItemService {
 	@Transactional
 	public ApiResponseDto<GroceryItem> updateGroceryItem(Long id, UpdateGroceryItemRequestDto updatedItem) {
 		GroceryItem item = groceryItemRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(ResponseMessages.ITEM_DOES_NOT_EXIST));
+				.orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.ITEM_DOES_NOT_EXIST));
 		item.setName(updatedItem.getName());
 		item.setPrice(updatedItem.getPrice());
 		item.setDescription(updatedItem.getDescription());
@@ -67,7 +68,7 @@ public class GroceryItemServiceImpl implements GroceryItemService {
 	@Transactional
 	public ApiResponseDto<GroceryItem> updateInventory(Long id, UpdateInventoryRequestDto updateInventoryRequestDto) {
 		GroceryItem item = groceryItemRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(ResponseMessages.ITEM_DOES_NOT_EXIST));
+				.orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.ITEM_DOES_NOT_EXIST));
 		item.setQuantity(updateInventoryRequestDto.getQuantity());
 		GroceryItem savedGroceryItem = groceryItemRepository.save(item);
 		return ApiResponseDto.<GroceryItem>builder().isSuccess(true)

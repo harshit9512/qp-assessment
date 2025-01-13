@@ -31,13 +31,6 @@ public class ApplicationGlobalExceptionHandler {
 				.message(ErrorMessages.DEFAULT_ERR_MSG).errorMessage(ex.getMessage()).build();
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
-
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ApiResponseDto<Object>> handleGlobalException(Exception ex) {
-		ApiResponseDto<Object> errorResponse = ApiResponseDto.<Object>builder().isSuccess(false)
-				.message(ErrorMessages.DEFAULT_ERR_MSG).errorMessage(ex.getMessage()).build();
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
 	
 	@ExceptionHandler(UnauthorizedAccessException.class)
 	public ResponseEntity<ApiResponseDto<Object>> handleUnauthorizedAccessException(UnauthorizedAccessException ex) {
@@ -69,4 +62,18 @@ public class ApplicationGlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+	
+	@ExceptionHandler(ResourceConflictException.class)
+	public ResponseEntity<ApiResponseDto<Object>> handleInvalidRequestException(ResourceConflictException ex) {
+		ApiResponseDto<Object> errorResponse = ApiResponseDto.<Object>builder().isSuccess(false)
+				.message(ErrorMessages.DEFAULT_ERR_MSG).errorMessage(ex.getMessage()).build();
+		return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ApiResponseDto<Object>> handleGlobalException(Exception ex) {
+		ApiResponseDto<Object> errorResponse = ApiResponseDto.<Object>builder().isSuccess(false)
+				.message(ErrorMessages.DEFAULT_ERR_MSG).errorMessage(ex.getMessage()).build();
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }
